@@ -99,15 +99,6 @@ export default function Treasury() {
             }
         )
     }
-    if (activeNetwork === FantomNetworkInfo) {
-        ratioPieChartData.push(
-            {
-                value: BALinsuranceAmount,
-                name: 'Foundation BAL Insurance'
-            }
-        )
-    }
-    console.log("ratioPieChartData", ratioPieChartData)
 
     return (
         <Box sx={{ flexGrow: 2 }}>

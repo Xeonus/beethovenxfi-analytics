@@ -6,7 +6,7 @@ import { useActiveNetworkVersion } from "../../state/application/hooks";
 import { useBalancerProtocolData } from "../../data/balancer/useProtocolData";
 import ChainFeeChart from "../../components/ChainFeeChart";
 import { useBalancerPools } from "../../data/balancer/usePools";
-import { FEE_COLLECTOR_ADDRESS } from "../../constants/wallets";
+import { FEE_COLLECTOR_ADDRESS, getTreasuryConfig } from "../../constants/wallets";
 import { useGetTotalBalances } from "../../data/debank/useGetTotalBalances";
 import FeeCollectorTokenTable from "../../components/Tables/FeeCollectorTokenTable";
 import { formatDollarAmount } from "../../utils/numbers";
@@ -49,10 +49,11 @@ export default function Fees() {
     //Load pools and balances
     const pools = useBalancerPools(250, startDate, endDate).filter(pool => pool.poolType !== 'LiquidityBootstrapping');
     const yieldPools = useBalancerPools(250, startTimestamp, endTimeStamp).filter(pool => pool.poolType !== 'LiquidityBootstrapping');
-    const { totalBalances } = useGetTotalBalances(FEE_COLLECTOR_ADDRESS);
+    const treasuryConfig = getTreasuryConfig(activeNetwork.chainId)
+    const { totalBalances } = useGetTotalBalances(treasuryConfig.feeCollector);
 
     //TODO: Figure out how to do this with BEETs
-    const decoratedPools = useDecoratePools(yieldPools.length > 10 ? yieldPools : undefined)
+    //const decoratedPools = useDecoratePools(yieldPools.length > 10 ? yieldPools : undefined)
 
     //Problem statement: We should distinguish between views of real realized fees -> make a swap fee analysis view that shows the "real" swap fees earned
     //Create an additional aggregated table that ESTIMATES / Makes a forecast on potential fees and its distributions from TODAYS fees!
@@ -214,6 +215,7 @@ export default function Fees() {
                     <PoolFeeTable poolDatas={pools} timeRange={Number(timeRange)} />
                 </Grid>
             </Grid>
+            {/* 
             <Grid
                 container
                 spacing={1}
@@ -255,7 +257,7 @@ export default function Fees() {
                         <CustomLinearProgress />
                         <Typography variant="caption">Calculating token yield...</Typography>
                     </Box>
-                </Grid>)}
+                </Grid>)} */}
             <Grid
                 container
                 spacing={1}
@@ -265,10 +267,10 @@ export default function Fees() {
                     <Box display="flex" alignItems='center'>
                         <Typography variant="h5">Tokens in Fee Collector Contract</Typography>
                         <Box ml={1}>
-                            <StyledExternalLink address={FEE_COLLECTOR_ADDRESS} type={'address'} activeNetwork={activeNetwork} />
+                            <StyledExternalLink address={treasuryConfig.feeCollector} type={'address'} activeNetwork={activeNetwork} />
                         </Box>
                     </Box>
-                    <Typography variant="caption">Collected tokens will be distributed to veBAL holders, bribes and the DAO</Typography>
+                    <Typography variant="caption">Collected tokens will be distributed to fBEETs holders, bribes and the DAO</Typography>
                 </Grid>
                 <Grid item xs={11}>
                     <Typography variant="subtitle1">Tokens to be distributed: {formatDollarAmount(totalAmountAboveThreshold)}</Typography>

@@ -112,12 +112,12 @@ const MenuDrawer = ({
                     </ListItemIcon>
                     <ListItemText primary={'Tokens'} />
                 </ListItemButton>
-                <ListItemButton key={'BEETs Emissions'} component={NavLink} to={'/' + route + 'emissions'}>
+                {/* <ListItemButton key={'BEETs Emissions'} component={NavLink} to={'/' + route + 'emissions'}>
                     <ListItemIcon>
                         <AutoAwesomeIcon />
                     </ListItemIcon>
                     <ListItemText primary={'BEETs Emissions'} />
-                </ListItemButton>
+                </ListItemButton> */}
             </List>
             <List>
                 <Divider />
@@ -133,7 +133,7 @@ const MenuDrawer = ({
                     </ListItemIcon>
                     <ListItemText primary={'DAO Treasury'} />
                 </ListItemButton>
-                <ListItemButton key={'Service Providers'} component={NavLink} to={'serviceProviders'}>
+                {/* <ListItemButton key={'Service Providers'} component={NavLink} to={'serviceProviders'}>
                     <ListItemIcon>
                         <HandshakeIcon />
                     </ListItemIcon>
@@ -144,7 +144,7 @@ const MenuDrawer = ({
                         <RequestQuoteIcon />
                     </ListItemIcon>
                     <ListItemText primary={'DAO Financials'} />
-                </ListItemButton>
+                </ListItemButton> */}
             </List>
             <Divider />
             <Box display="flex" justifyContent="space-between" paddingX={drawerWidth / 6 + 'px'}>

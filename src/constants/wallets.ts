@@ -1,7 +1,7 @@
 import { FantomNetworkInfo, OptimismNetworkInfo } from "./networks";
 
 //Mainnet fee collector address
-export const FEE_COLLECTOR_ADDRESS = '0xce88686553686da562ce7cea497ce749da109f9f';
+export const FEE_COLLECTOR_ADDRESS = '0xC6920d3a369E7c8BD1A22DbE385e11d1F7aF948F';
 
 export const FEE_STREAMER = '0xe649b71783d5008d10a96b6871e3840a398d4f06';
 
@@ -63,11 +63,13 @@ export const TREASURY_ADDRESS_CONFIG = [
         chainID: FantomNetworkInfo.chainId,
         treasury: TREASURY_ADDRESS_FTM,
         copper: COPPER_LAUNCH_PROXY_MAINNET,
+        feeCollector: '0xC6920d3a369E7c8BD1A22DbE385e11d1F7aF948F'
     },
     {
         chainID: OptimismNetworkInfo.chainId,
         treasury: TREASURY_ADDRESS_OP,
         copper: COPPER_LAUNCH_PROXY_ARBITRUM,
+        feeCollector: '0xce88686553686DA562CE7Cea497CE749DA109f9F'
     }
 ];
 

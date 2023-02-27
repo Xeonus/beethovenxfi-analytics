@@ -124,7 +124,7 @@ export default function Emissions() {
 
     return (
         <Box sx={{ flexGrow: 2 }}>
-            {activeNetwork === FantomNetworkInfo ?
+            {activeNetwork.chainId == 'test' ?
             <Grid
                 container
                 spacing={2}
