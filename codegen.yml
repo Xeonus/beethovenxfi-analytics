@@ -1,5 +1,5 @@
 schema:
-  - 'https://backend-v2.beets-ftm-node.com/'
+  - 'https://backend-v3.beets-ftm-node.com/'
   - 'https://api.thegraph.com/subgraphs/name/publu/fantom-blocks'
   - 'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx'
 documents:

@@ -33,7 +33,7 @@ export default function CurrencyLogo({
 
     const [activeNetwork] = useActiveNetworkVersion();
     const theme = useTheme();
-    const tokenList = useLatestTokenList(activeNetwork !== FantomNetworkInfo ? tokenClientOptimism : tokenClient)
+    const tokenList = useLatestTokenList(activeNetwork !== FantomNetworkInfo ? tokenClientOptimism : tokenClient, activeNetwork.chainId)
 
     //Balancer coin repository asset location
     let assetLoc = 'master';
@@ -45,7 +45,7 @@ export default function CurrencyLogo({
     const tempSources: { [address: string]: string } = useMemo(() => {
         return {
             [`${address}`]:
-                `https://raw.githubusercontent.com/balancer-labs/assets/${assetLoc}/assets/${address}.png`,
+                `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${address}.png`,
         }
     }, [address, assetLoc])
 

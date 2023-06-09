@@ -1,9 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import isDev from '../../constants';
-import { DB_KEY } from '../balancer/constants';
 import { TransactionHistory } from './debankTypes';
-import debankPortfolio from '../mocks/debank-complexPortfolioChain.json'
 import debankTransactions from './data/treasuryTxHistory.json'
 import { useActiveNetworkVersion } from '../../state/application/hooks';
 
@@ -16,12 +14,7 @@ export const useGetTransactions = (walletId: string, startTimeStamp: number) => 
     async function fetchTransactions() {
       try {
         const response = await axios.get(
-          `https://pro-openapi.debank.com/v1/user/history_list?id=${walletId}&chain_id=${activeNetwork.debankId}&start_time=${startTimeStamp}`,
-          {
-            headers: {
-              'AccessKey': DB_KEY,
-            }
-          }
+            `https://us-central1-aura-analytics-1c4b3.cloudfunctions.net/historyList?id=${walletId}&chain_id=${activeNetwork.debankId}&start_time=${startTimeStamp}`,
         );
         const json: TransactionHistory = response.data
         console.log("response body", response)

@@ -1,7 +1,9 @@
 {
   "possibleTypes": {
+    "GqlPoolAprValue": ["GqlPoolAprRange", "GqlPoolAprTotal"],
     "GqlPoolBase": [
       "GqlPoolElement",
+      "GqlPoolGyro",
       "GqlPoolLinear",
       "GqlPoolLiquidityBootstrapping",
       "GqlPoolMetaStable",
@@ -30,6 +32,7 @@
     ],
     "GqlPoolUnion": [
       "GqlPoolElement",
+      "GqlPoolGyro",
       "GqlPoolLinear",
       "GqlPoolLiquidityBootstrapping",
       "GqlPoolMetaStable",

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import isDev, { YIELD_BEARING_TOKENS } from '../../constants';
-import { DB_KEY } from '../balancer/constants';
 import { TotalTokenBalances } from './debankTypes';
 import debankBalances from '../mocks/debank-tokensTreasury.json'
 import { useActiveNetworkVersion } from '../../state/application/hooks';
@@ -16,12 +15,7 @@ export const useGetTotalBalances = (walletId: string) => {
         //Optimizing for single chain! Multi-chain call:
         //`https://pro-openapi.debank.com/v1/user/all_token_list?id=${walletId}&is_all=true`,
         const response = await axios.get(
-          `https://pro-openapi.debank.com/v1/user/token_list?id=${walletId}&chain_id=${activeNetwork.debankId}&is_all=true`,
-          {
-            headers: {
-              'AccessKey': DB_KEY,
-            }
-          }
+            ` https://us-central1-aura-analytics-1c4b3.cloudfunctions.net/tokenList?id=${walletId}&chain_id=${activeNetwork.debankId}&is_all=true`,
         );
         console.log("TOKEN BALANCES: ", response.data)
         const json: TotalTokenBalances = response.data

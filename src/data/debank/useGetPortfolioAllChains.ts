@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import isDev from '../../constants';
-import { DB_KEY } from '../balancer/constants';
 import { Portfolio } from './debankTypes';
 import debankPortfolio from '../mocks/debank-complexPortfolio.json'
 
@@ -12,12 +11,7 @@ export const useGetPortfolioAllChains = (walletId: string) => {
     async function fetchTotalBalance() {
       try {
         const response = await axios.get(
-          `https://pro-openapi.debank.com/v1/user/all_complex_protocol_list?id=${walletId}&chain_ids=eth,matic,arb`,
-          {
-            headers: {
-              'AccessKey': DB_KEY,
-            }
-          }
+            `https://us-central1-aura-analytics-1c4b3.cloudfunctions.net/allComplexProtocol?id=${walletId}&chain_ids=eth,matic,arb`,
         );
         const json: Portfolio = response.data
         setPortfolio(json);
