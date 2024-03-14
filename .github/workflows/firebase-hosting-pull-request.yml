@@ -54,5 +54,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_BEETHOVENXFI_ANALYTICS }}'
-          projectId: balancer-analytics
+          projectId: beethovenxfi-analytics
           firebaseToolsVersion: 12.7.0
