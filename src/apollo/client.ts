@@ -120,3 +120,18 @@ export const optimismClient = new ApolloClient({
         },
     },
   });
+
+export const balancerV3APIClient = new ApolloClient({
+    uri: 'https://api-v3.balancer.fi/',
+    cache: new InMemoryCache(),
+    queryDeduplication: true,
+    defaultOptions: {
+        watchQuery: {
+            fetchPolicy: 'no-cache',
+        },
+        query: {
+            fetchPolicy: 'no-cache',
+            errorPolicy: 'all',
+        },
+    },
+});

@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { Grid, CircularProgress, Typography, Stack, Skeleton } from '@mui/material';
+import {Grid, CircularProgress, Typography, Stack, Skeleton, Alert, IconButton} from '@mui/material';
 import { useCoinGeckoSimpleTokenPrices } from '../../data/coingecko/useCoinGeckoSimpleTokenPrices';
 import CoinCard from '../../components/Cards/CoinCard';
 import MetricsCard from '../../components/Cards/MetricsCard';
@@ -18,7 +18,10 @@ import CustomLinearProgress from '../../components/Progress/CustomLinearProgress
 import ExploreCard from '../../components/Cards/ExploreCard';
 import FtmLogo from '../../assets/svg/fantom-ftm-logo.svg'
 import OpLogo from '../../assets/svg/optimism.svg'
-import { useLatestTokenList } from '../../data/tokens/useLatestTokenList';
+import CloseIcon from '@mui/icons-material/Close';
+import {useState} from "react";
+import useGetSimpleTokenPrices from "../../data/balancer-api-v3/useGetSimpleTokenPrices";
+import {useActiveNetworkVersion} from "../../state/application/hooks";
 
 
 
@@ -26,9 +29,13 @@ export default function Protocol() {
 
     //TODO: obtain form contants
     const beetsAddress = '0xf24bcf4d1e507740041c9cfd2dddb29585adce1e';
+    const [activeNetwork] = useActiveNetworkVersion()
     //Data
     const aggregatedProtocolData = useAggregatedProtocolData();
-    const coinData = useCoinGeckoSimpleTokenPrices([beetsAddress]);
+    const v3CoinData = useGetSimpleTokenPrices([beetsAddress], 'FANTOM');
+    console.log("v3CoinData", v3CoinData)
+    const [protocolAlert, setProtocolAlert] = useState(true);
+    const protocolAlertMessage = 'Data for FTM is partially corrupted (multi-chain depeg) - user discretion is advised when reviewing this data source'
 
     //const tokenList = useLatestTokenList();
     //console.log("tokenList", tokenList)
@@ -42,8 +49,31 @@ export default function Protocol() {
     const swapsChange = aggregatedProtocolData.swapsChange ? aggregatedProtocolData.swapsChange * 100 : 0
     const mainnetPercentage = 100 / aggregatedProtocolData.tvl * mainnetTVL
 
+    const handleProtocolAlert = () => {
+        setProtocolAlert(false);
+    };
+
     return (
         <Box sx={{ flexGrow: 2 }}>
+            <Box mb={1} sx={{flexGrow: 2, justifyContent: "center"}}>
+                {protocolAlert && (
+                    <Alert
+                        severity="warning"
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={handleProtocolAlert}
+                            >
+                                <CloseIcon fontSize="inherit"/>
+                            </IconButton>
+                        }
+                    >
+                        {protocolAlertMessage}
+                    </Alert>
+                )}
+            </Box>
             <Grid
                 container
                 spacing={2}
@@ -60,15 +90,15 @@ export default function Protocol() {
                         columns={{ xs: 4, sm: 2, md: 10 }}
                     >
                         <Grid item xs={11} sm={4} md={4}>
-                            {coinData && coinData[beetsAddress] && coinData[beetsAddress].usd ?
+                            {v3CoinData && v3CoinData.data[beetsAddress] && v3CoinData.data[beetsAddress].price ?
                                 <CoinCard
                                     tokenAddress={beetsAddress}
-                                    tokenName='Beets'
-                                    tokenPrice={coinData[beetsAddress].usd}
-                                    tokenPriceChange={coinData[beetsAddress].usd_24h_change}
+                                    tokenName='BEETs'
+                                    tokenPrice={v3CoinData.data[beetsAddress].price}
+                                    tokenPriceChange={v3CoinData.data[beetsAddress].priceChangePercentage24h}
 
                                 />
-                                : <CircularProgress />}
+                                : <CircularProgress/>}
 
                         </Grid>
                     </Grid>
