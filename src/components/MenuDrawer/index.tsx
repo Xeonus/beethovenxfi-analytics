@@ -17,7 +17,7 @@ import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import DiscordIconLight from '../../assets/svg/discord-light.svg'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import TwitterIcon from '@mui/icons-material/Twitter';
+import XIcon from '@mui/icons-material/X';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -121,12 +121,14 @@ const MenuDrawer = ({
             </List>
             <List>
                 <Divider />
+                {/*}
                 <ListItemButton key={'Fees'} component={NavLink} to={networkPrefix(activeNetwork) + 'fees'}>
                     <ListItemIcon>
                         <MonetizationOnIcon />
                     </ListItemIcon>
                     <ListItemText primary={'Protocol Revenue'} />
                 </ListItemButton>
+                */}
                 <ListItemButton key={'DAO Treasury'} component={NavLink} to={networkPrefix(activeNetwork) + 'treasury'}>
                     <ListItemIcon>
                         <AccountBalanceWalletIcon />
@@ -154,13 +156,11 @@ const MenuDrawer = ({
             <Box  maxWidth={drawerWidth + drawerWidth / 6}>
                 <Box mt={1} display="flex" justifyContent="space-between" paddingX={drawerWidth / 6 + 'px'} paddingY="5px">
 
-                    <Link href="https://github.com/Xeonus" target="_blank" rel="noopener noreferrer">
-                        <GitHubIcon />
+
+                    <Link href="https://twitter.com/beethoven_x" target="_blank" rel="noopener noreferrer">
+                        <XIcon />
                     </Link>
-                    <Link href="https://twitter.com/Xeonusify" target="_blank" rel="noopener noreferrer">
-                        <TwitterIcon />
-                    </Link>
-                    <Link href="https://discord.balancer.fi" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://beets.fi/discord" target="_blank" rel="noopener noreferrer">
                         <img src={DiscordIconLight} alt="Discord Icon" width="25" />
                     </Link>
                 </Box>

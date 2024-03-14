@@ -1,45 +1,38 @@
 import { useMemo } from 'react';
-import { useActiveNetworkVersion } from "../../state/application/hooks";
 import { useTheme } from '@mui/material/styles'
-import { FantomNetworkInfo, SupportedNetwork } from "../../constants/networks";
+import {FantomNetworkInfo, OptimismNetworkInfo} from "../../constants/networks";
 import { isAddress } from '../../utils';
 import { Avatar } from '@mui/material';
-import { useLatestTokenList } from '../../data/tokens/useLatestTokenList';
-import { tokenClient, tokenClientOptimism } from '../../apollo/client';
+import useGetTokenLists, {TokenList} from "../../data/balancer/useGetTokenList";
+import {useLatestTokenList} from "../../data/tokens/useLatestTokenList";
+import {tokenClient} from "../../apollo/client";
+import {useActiveNetworkVersion} from "../../state/application/hooks";
 
 
-export const getTokenLogoURL = (address: string, networkId: SupportedNetwork) => {
-    switch (networkId) {
-        case SupportedNetwork.FANTOM:
-            return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/assets/${address}/logo.png`
-        case SupportedNetwork.OPTIMISM:
-            if (address === '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8') {
-                return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png`
-            } else {
-                return `https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/optimism/assets/${address}/logo.png`
-            }
-        default:
-            return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/assets/${address}/logo.png`
+const getLogoURIByAddressAndChainId = (
+    tokenList: TokenList | undefined,
+    address: string,
+): string  => {
+    if (tokenList) {
+        const foundToken = tokenList.tokens.find((token) => token.address === address);
+        if (address.toLowerCase() === '0xc128a9954e6c874ea3d62ce62b468ba073093f25') {
+            return 'https://raw.githubusercontent.com/balancer/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png'
+        }
+        return foundToken?.logoURI ? foundToken?.logoURI : '';
     }
-}
+    return '';
+};
 
-export default function CurrencyLogo({
-    address,
-    size = '24px',
-}: {
+export default function CurrencyLogo({address, size = '24px',}: {
     address?: string
     size?: string
 }) {
 
-    const [activeNetwork] = useActiveNetworkVersion();
     const theme = useTheme();
-    const tokenList = useLatestTokenList(activeNetwork !== FantomNetworkInfo ? tokenClientOptimism : tokenClient, activeNetwork.chainId)
-
-    //Balancer coin repository asset location
-    let assetLoc = 'master';
-    if (activeNetwork !== FantomNetworkInfo) {
-        assetLoc = 'refactor-for-multichain'
-    }
+    //TODO: use unified tokenlist with one query instead of many
+    const tokenList = useGetTokenLists();
+    const optimismTokenList = useLatestTokenList(tokenClient, ['OPTIMISM'])
+    const ftmTokenList = useLatestTokenList(tokenClient, ['FANTOM'])
 
     //Secondary assets are loaded through Balancer
     const tempSources: { [address: string]: string } = useMemo(() => {
@@ -47,7 +40,7 @@ export default function CurrencyLogo({
             [`${address}`]:
                 `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${address}.png`,
         }
-    }, [address, assetLoc])
+    }, [address])
 
     //Token image sources
     const srcs: string[] = useMemo(() => {
@@ -56,12 +49,13 @@ export default function CurrencyLogo({
 
         if (checkSummed && address) {
             const override = tempSources[address]
-            return [getTokenLogoURL(checkSummed, activeNetwork.id), override]
+            return [getLogoURIByAddressAndChainId(tokenList, checkSummed), override]
         }
         return []
-    }, [address, tempSources, activeNetwork.id])
+    }, [address, tempSources, tokenList])
 
-    const newSrc = tokenList.tokenList?.find(el => el.address === address);
+    const newSrc = optimismTokenList.tokenList?.find(el => el.address === address);
+    const ftmSrc = ftmTokenList.tokenList?.find(el => el.address.toLowerCase() === address);
 
     //Return an avatar for the default source, or an avatar as a child if default source is empty!
     return <Avatar
@@ -82,9 +76,9 @@ export default function CurrencyLogo({
                     color: 'black',
                     fontSize: '15px',
                 }}
-                src={newSrc && newSrc.logoURI ? newSrc.logoURI : srcs[0]}
+                src={newSrc && newSrc.logoURI ? newSrc.logoURI : (ftmSrc && ftmSrc.logoURI ? ftmSrc.logoURI : srcs[0])}
                 alt={'?'}
-                />
+            />
         }
         alt={'?'}
     />

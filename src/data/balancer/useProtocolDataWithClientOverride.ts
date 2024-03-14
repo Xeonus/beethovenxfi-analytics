@@ -26,8 +26,7 @@ export function useBalancerChainProtocolData(clientUri: string, startTimestamp: 
     const [t24, t48, tWeek] = useDeltaTimestamps();
     const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek], blockClientOverride);
     const [block24, block48, blockWeek] = blocks ?? [];
-    const [getProcotolData, { data }] = useGetProtocolDataLazyQuery({client: clientOverride}
-    );
+    const [getProcotolData, { data }] = useGetProtocolDataLazyQuery({client: clientOverride});
 
     useEffect(() => {
         if (block24) {
@@ -67,12 +66,13 @@ export function useBalancerChainProtocolData(clientUri: string, startTimestamp: 
     const volumeData = snapshots.map((snapshot, idx) => {
         const prevValue = idx === 0 ? 0 : parseFloat(snapshots[idx - 1].totalSwapVolume);
         const value = parseFloat(snapshot.totalSwapVolume);
+        const deltaValue = value - prevValue;
 
         return {
-            value: value - prevValue > 0 ? value - prevValue : 0,
+            value: (deltaValue > 0 && deltaValue <= 8000000) ? deltaValue : 0,
             time: unixToDate(snapshot.timestamp),
         };
-    });
+    }).filter(data => data.value > 0);
 
     const swapData = snapshots.map((snapshot, idx) => {
         const prevValue = idx === 0 ? 0 : parseFloat(snapshots[idx - 1].totalSwapCount);
@@ -87,12 +87,13 @@ export function useBalancerChainProtocolData(clientUri: string, startTimestamp: 
     const feeData = snapshots.map((snapshot, idx) => {
         const prevValue = idx === 0 ? 0 : parseFloat(snapshots[idx - 1].totalSwapFee);
         const value = parseFloat(snapshot.totalSwapFee);
+        const deltaValue = value - prevValue;
 
         return {
-            value: value - prevValue > 0 ? value - prevValue : 0,
+            value: (deltaValue > 0 && deltaValue <= 25000) ? deltaValue : 0,
             time: unixToDate(snapshot.timestamp),
         };
-    });
+    }).filter(data => data.value > 0);
 
     const tvl = parseFloat(balancer.totalLiquidity);
     const tvl24 = parseFloat(balancer24.totalLiquidity);
