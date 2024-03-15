@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Card, Grid, Box } from '@mui/material';
 import CustomLinearProgress from '../../Progress/CustomLinearProgress';
 import MenuItem from '@mui/material/MenuItem';
@@ -52,34 +52,27 @@ export default function ProtocolMultiBarChart({ftmProtocolData, optimismProtocol
     //Generic x-Axis
     const ftmxAxisData = ftmProtocolData.map(el => el.time);
 
-    //---Hooks for custom time ranges---
-    const [timeRange, setTimeRange] = React.useState('365');
-    //data state
-    const [rangedftmData, setrangedftmData] = React.useState(ftmData)
-    const [rangedopData, setrangedopData] = React.useState(opData);
-    const [rangedxAxis, setRangedxAxis] = React.useState(ftmxAxisData);
+    // Hooks for custom time ranges
+    const [timeRange, setTimeRange] = useState('365');
 
-    React.useEffect(() => {
-        if (ftmData.length < Number(timeRange) || timeRange === '0') {
-            setrangedftmData(ftmData);
-            setrangedopData(opData);
-            setRangedxAxis(ftmxAxisData)
-        } else {
-            setrangedftmData(ftmData.slice(ftmData.length - Number(timeRange)))
-            setrangedopData(opData.slice(opData.length - Number(timeRange)))
-            setRangedxAxis(ftmxAxisData.slice(ftmxAxisData.length - Number(timeRange)))
-        }
+    // Data state
+    const [rangedFtmData, setRangedFtmData] = useState(ftmData);
+    const [rangedOpData, setRangedOpData] = useState(opData);
+    const [rangedXAxis, setRangedXAxis] = useState(ftmxAxisData);
+
+    useEffect(() => {
+        // This effect adjusts the displayed data based on the selected time range
+        const range = Number(timeRange); // Convert once and use throughout
+        const totalDataLength = ftmxAxisData.length;
+        const rangeStart = range === 0 ? 0 : Math.max(totalDataLength - range, 0);
+
+        setRangedFtmData(ftmData.slice(rangeStart));
+        setRangedOpData(opData.slice(rangeStart));
+        setRangedXAxis(ftmxAxisData.slice(rangeStart));
     }, [timeRange]);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setTimeRange(event.target.value as string);
-        if (ftmData.length < Number(event.target.value) || event.target.value === '0') {
-            setrangedftmData(ftmData);
-            setrangedopData(opData);
-        } else if (ftmData.length >= Number(event.target.value)) {
-            setrangedftmData(ftmData.slice(ftmData.length - Number(event.target.value)))
-            setrangedopData(opData.slice(opData.length - Number(event.target.value)))
-        }
+    const handleChange = (event: SelectChangeEvent<string>) => {
+        setTimeRange(event.target.value);
     };
 
     return (
@@ -115,9 +108,9 @@ export default function ProtocolMultiBarChart({ftmProtocolData, optimismProtocol
                 </FormControl>
                 </Box>
             <ProtocolMultiBarCharts  
-                ftmData={rangedftmData} 
-                opData={rangedopData} 
-                xAxis={rangedxAxis}
+                ftmData={rangedFtmData}
+                opData={rangedOpData}
+                xAxis={rangedXAxis}
                 isUSD={isUSD}
                 />
             </Card> : <Grid
